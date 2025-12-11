@@ -1,0 +1,153 @@
+<!-- templates/tyres/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}TyreMaster - Find Tyre Sizes for Any Vehicle{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">Find Tyre Sizes Instantly</h1>
+                <p class="lead">Accurate tyre specifications for cars, bikes, and scooters. Search by vehicle or tyre size.</p>
+                
+                <!-- Main Search Form -->
+                <form action="{% url 'home' %}" method="get" class="mt-4">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" name="q" 
+                               placeholder="Search by vehicle (e.g., 'Honda Activa 2023')" 
+                               value="{{ query }}">
+                        <button class="btn btn-danger" type="submit">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-3">
+                    <a href="{% url 'search_by_tyre' %}" class="text-light">
+                        <i class="fas fa-tire"></i> Or search by tyre size →
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="fas fa-car fa-10x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats -->
+<div class="container mb-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="fas fa-car fa-3x text-primary mb-3"></i>
+                    <h3>Cars</h3>
+                    <p class="text-muted">Find tyre sizes for popular car models</p>
+                    <a href="{% url 'vehicle_list' %}?category=CAR" class="btn btn-outline-primary">Browse Cars</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="fas fa-motorcycle fa-3x text-success mb-3"></i>
+                    <h3>Bikes</h3>
+                    <p class="text-muted">Motorcycle tyre specifications</p>
+                    <a href="{% url 'vehicle_list' %}?category=BIKE" class="btn btn-outline-success">Browse Bikes</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="fas fa-motorcycle fa-3x text-warning mb-3"></i>
+                    <h3>Scooters</h3>
+                    <p class="text-muted">Scooter tyre sizes and pressures</p>
+                    <a href="{% url 'vehicle_list' %}?category=SCOOTER" class="btn btn-outline-warning">Browse Scooters</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Results -->
+{% if query or category %}
+<div class="container mb-5">
+    <h3 class="mb-4">
+        {% if query %}Search Results for "{{ query }}"{% endif %}
+        {% if category %} - {{ category }}{% endif %}
+    </h3>
+    
+    {% if vehicles %}
+    <div class="row">
+        {% for vehicle in vehicles %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="position-relative">
+                    <span class="badge bg-{% if vehicle.category == 'CAR' %}primary{% elif vehicle.category == 'BIKE' %}success{% else %}warning{% endif %} category-badge">
+                        {{ vehicle.get_category_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ vehicle.brand }} {{ vehicle.model }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ vehicle.year }}</h6>
+                    
+                    {% if vehicle.tyres %}
+                    <div class="mt-3">
+                        {% if vehicle.tyres.tyre_size %}
+                            <p><strong>Tyre Size:</strong> {{ vehicle.tyres.tyre_size }}</p>
+                        {% else %}
+                            <p><strong>Front:</strong> {{ vehicle.tyres.get_front_display }}</p>
+                            <p><strong>Rear:</strong> {{ vehicle.tyres.get_rear_display }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'vehicle_detail' vehicle.slug %}" class="btn btn-primary mt-3">
+                        View Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No vehicles found. Try a different search or 
+        <a href="{% url 'vehicle_list' %}" class="alert-link">browse all vehicles</a>.
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Popular Vehicles -->
+<div class="container">
+    <h3 class="mb-4">Popular Vehicles</h3>
+    <div class="row">
+        <!-- This will be dynamic later - for now, hardcode or show from views -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5>Honda Activa 6G</h5>
+                    <p class="text-muted">Scooter | 2023</p>
+                    <p><strong>Tyre Size:</strong> Front: 90/90-12, Rear: 90/100-10</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5>TVS Apache RTR 160</h5>
+                    <p class="text-muted">Bike | 2023</p>
+                    <p><strong>Tyre Size:</strong> Front: 90/90-17, Rear: 130/70-17</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

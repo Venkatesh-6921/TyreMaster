@@ -1,0 +1,197 @@
+<!-- templates/tyres/vehicle_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Browse Vehicles - TyreMaster{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Filters Sidebar -->
+        <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-filter"></i> Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" id="filterForm">
+                    <!-- Category Filter -->
+                    <h6>Category</h6>
+                    <select name="category" class="form-select mb-3" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for code, name in categories %}
+                        <option value="{{ code }}" {% if selected_category == code %}selected{% endif %}>
+                            {{ name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <!-- Brand Filter -->
+                    <h6>Brand</h6>
+                    <select name="brand" class="form-select mb-3" onchange="this.form.submit()">
+                        <option value="">All Brands</option>
+                        {% for brand in brands %}
+                        <option value="{{ brand }}" {% if selected_brand == brand %}selected{% endif %}>
+                            {{ brand }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <!-- Year Range -->
+                    <h6 class="mt-3">Year Range</h6>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <input type="number" name="year_from" class="form-control" 
+                                placeholder="From" value="{{ selected_year_from }}" 
+                                min="1900" max="2025">
+                        </div>
+                        <div class="col-6">
+                            <input type="number" name="year_to" class="form-control" 
+                                placeholder="To" value="{{ selected_year_to }}"
+                                min="1900" max="2025">
+                        </div>
+                    </div>
+                    
+                    <!-- Tyre Characteristics -->
+                    <h6>Tyre Width (mm)</h6>
+                    <select name="tyre_width" class="form-select mb-3" onchange="this.form.submit()">
+                        <option value="">Any Width</option>
+                        {% for width in tyre_widths %}
+                        <option value="{{ width }}" {% if selected_tyre_width == width|stringformat:"i" %}selected{% endif %}>
+                            {{ width }} mm
+                        </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <h6>Rim Size (inches)</h6>
+                    <select name="rim_size" class="form-select mb-3" onchange="this.form.submit()">
+                        <option value="">Any Rim</option>
+                        {% for rim in rim_sizes %}
+                        <option value="{{ rim }}" {% if selected_rim_size == rim|stringformat:"i" %}selected{% endif %}>
+                            {{ rim }}"
+                        </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <!-- Sort Options -->
+                    <h6 class="mt-3">Sort By</h6>
+                    <select name="sort_by" class="form-select mb-3" onchange="this.form.submit()">
+                        <option value="brand" {% if selected_sort == 'brand' %}selected{% endif %}>Brand A-Z</option>
+                        <option value="model" {% if selected_sort == 'model' %}selected{% endif %}>Model A-Z</option>
+                        <option value="year_asc" {% if selected_sort == 'year_asc' %}selected{% endif %}>Year (Oldest First)</option>
+                        <option value="year_desc" {% if selected_sort == 'year_desc' %}selected{% endif %}>Year (Newest First)</option>
+                    </select>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Apply Filters
+                        </button>
+                        <a href="{% url 'vehicle_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Clear All
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Filter Summary -->
+        <div class="card">
+            <div class="card-body">
+                <h6><i class="fas fa-chart-bar"></i> Filter Summary</h6>
+                <small>
+                    {% if selected_category or selected_brand or selected_year_from or selected_tyre_width %}
+                    <ul class="mb-1 ps-3">
+                        {% if selected_category %}<li>Category: {{ selected_category }}</li>{% endif %}
+                        {% if selected_brand %}<li>Brand: {{ selected_brand }}</li>{% endif %}
+                        {% if selected_year_from or selected_year_to %}
+                        <li>Year: {{ selected_year_from|default:"Any" }} - {{ selected_year_to|default:"Any" }}</li>
+                        {% endif %}
+                        {% if selected_tyre_width %}<li>Tyre Width: {{ selected_tyre_width }}mm</li>{% endif %}
+                        {% if selected_rim_size %}<li>Rim Size: {{ selected_rim_size }}"</li>{% endif %}
+                    </ul>
+                    {% else %}
+                    <p>No filters applied</p>
+                    {% endif %}
+                    <p class="mb-0"><strong>{{ vehicles.count }}</strong> vehicles found</p>
+                </small>
+            </div>
+        </div>
+    </div>
+
+            
+            <!-- Quick Stats -->
+            <div class="card">
+                <div class="card-body">
+                    <h6><i class="fas fa-chart-bar"></i> Quick Stats</h6>
+                    <p class="mb-1">Total Vehicles: {{ vehicles.count }}</p>
+                    <p class="mb-1">Cars: {{ vehicles|dictsort:"category"|length }}</p>
+                    <p class="mb-0">Last Updated: Today</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vehicle List -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    {% if selected_category %}
+                        {{ selected_category }}s
+                        {% if selected_brand %} - {{ selected_brand }}{% endif %}
+                    {% elif selected_brand %}
+                        {{ selected_brand }} Vehicles
+                    {% else %}
+                        All Vehicles
+                    {% endif %}
+                </h2>
+                <span class="badge bg-secondary">{{ vehicles.count }} vehicles</span>
+            </div>
+            
+            {% if vehicles %}
+            <div class="row">
+                {% for vehicle in vehicles %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title">{{ vehicle.brand }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ vehicle.model }}</h6>
+                                    <span class="badge bg-info">{{ vehicle.year }}</span>
+                                    <span class="badge bg-{% if vehicle.category == 'CAR' %}primary{% elif vehicle.category == 'BIKE' %}success{% else %}warning{% endif %} ms-1">
+                                        {{ vehicle.get_category_display }}
+                                    </span>
+                                </div>
+                                <i class="fas fa-{% if vehicle.category == 'CAR' %}car{% elif vehicle.category == 'BIKE' %}motorcycle{% else %}scooter{% endif %} fa-2x text-muted"></i>
+                            </div>
+                            
+                            {% if vehicle.tyres %}
+                            <div class="mt-3">
+                                <p class="mb-1"><strong>Tyre Information:</strong></p>
+                                {% if vehicle.tyres.tyre_size %}
+                                    <p class="mb-1"><small>Tyre Size: {{ vehicle.tyres.tyre_size }}</small></p>
+                                {% else %}
+                                    <p class="mb-1"><small>Front: {{ vehicle.tyres.get_front_display }}</small></p>
+                                    <p class="mb-1"><small>Rear: {{ vehicle.tyres.get_rear_display }}</small></p>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                            <p class="text-muted mt-3"><small>No tyre data available</small></p>
+                            {% endif %}
+                            
+                            <a href="{% url 'vehicle_detail' vehicle.slug %}" class="btn btn-sm btn-outline-primary mt-3">
+                                View Details <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                No vehicles found with the selected filters. 
+                <a href="{% url 'vehicle_list' %}" class="alert-link">Clear filters</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

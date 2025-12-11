@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Search by Size Range - TyreMaster{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">
+        <i class="fas fa-search text-primary"></i> Search by Size Range
+    </h1>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Size Range Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get">
+                        <h6>Tyre Width Range (mm)</h6>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Min</label>
+                                <input type="number" name="min_width" class="form-control" 
+                                       value="{{ min_width }}" placeholder="e.g., 80" min="50" max="400">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Max</label>
+                                <input type="number" name="max_width" class="form-control" 
+                                       value="{{ max_width }}" placeholder="e.g., 200" min="50" max="400">
+                            </div>
+                        </div>
+                        
+                        <h6>Rim Size Range (inches)</h6>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Min</label>
+                                <input type="number" name="min_rim" class="form-control" 
+                                       value="{{ min_rim }}" placeholder="e.g., 10" min="8" max="24">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Max</label>
+                                <input type="number" name="max_rim" class="form-control" 
+                                       value="{{ max_rim }}" placeholder="e.g., 18" min="8" max="24">
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            <a href="{% url 'search_by_size_range' %}" class="btn btn-outline-secondary">
+                                Clear
+                            </a>
+                        </div>
+                    </form>
+                    
+                    <!-- Common Ranges -->
+                    <div class="mt-4">
+                        <h6>Quick Ranges</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="?min_width=80&max_width=100" class="badge bg-light text-dark border">
+                                80-100mm (Scooters)
+                            </a>
+                            <a href="?min_width=100&max_width=150" class="badge bg-light text-dark border">
+                                100-150mm (Bikes)
+                            </a>
+                            <a href="?min_width=180&max_width=250" class="badge bg-light text-dark border">
+                                180-250mm (Cars)
+                            </a>
+                            <a href="?min_rim=10&max_rim=12" class="badge bg-light text-dark border">
+                                10-12" Rims
+                            </a>
+                            <a href="?min_rim=15&max_rim=17" class="badge bg-light text-dark border">
+                                15-17" Rims
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        Search Results
+                        {% if min_width or max_width or min_rim or max_rim %}
+                        <small class="ms-2">
+                            {% if min_width or max_width %}Width: {{ min_width|default:"Any" }}-{{ max_width|default:"Any" }}mm{% endif %}
+                            {% if min_rim or max_rim %} | Rim: {{ min_rim|default:"Any" }}-{{ max_rim|default:"Any" }}"{% endif %}
+                        </small>
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if vehicles %}
+                    <p>Found <strong>{{ vehicles.count }}</strong> vehicles matching your criteria:</p>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Vehicle</th>
+                                    <th>Year</th>
+                                    <th>Front Tyre</th>
+                                    <th>Rear Tyre</th>
+                                    <th>Width</th>
+                                    <th>Rim</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vehicle in vehicles %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'vehicle_detail' vehicle.slug %}">
+                                            {{ vehicle.brand }} {{ vehicle.model }}
+                                        </a>
+                                        <span class="badge bg-info ms-1">{{ vehicle.get_category_display }}</span>
+                                    </td>
+                                    <td>{{ vehicle.year }}</td>
+                                    <td>{{ vehicle.tyres.get_front_display|default:"-" }}</td>
+                                    <td>{{ vehicle.tyres.get_rear_display|default:"-" }}</td>
+                                    <td>
+                                        {% if vehicle.tyres.front_width %}
+                                        {{ vehicle.tyres.front_width }}{% if vehicle.tyres.rear_width and vehicle.tyres.rear_width != vehicle.tyres.front_width %}/{{ vehicle.tyres.rear_width }}{% endif %}mm
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vehicle.tyres.front_rim %}
+                                        {{ vehicle.tyres.front_rim }}{% if vehicle.tyres.rear_rim and vehicle.tyres.rear_rim != vehicle.tyres.front_rim %}/{{ vehicle.tyres.rear_rim }}{% endif %}"
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h4>No vehicles found</h4>
+                        <p class="text-muted">Try adjusting your search criteria</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-chart-pie"></i> Size Range Statistics</h6>
+                    <div class="row text-center mt-3">
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h3>{{ vehicles.count }}</h3>
+                                    <small>Vehicles</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    {% widthratio vehicles.count vehicles.count 100 %}%
+                                    <small>Of total database</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

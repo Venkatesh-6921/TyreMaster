@@ -1,0 +1,98 @@
+<!-- templates/tyres/about.html -->
+{% extends 'base.html' %}
+
+{% block title %}About TyreMaster - Tyre Size Database{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">
+                        <i class="fas fa-tire text-primary"></i> About TyreMaster
+                    </h1>
+                    
+                    <div class="text-center mb-5">
+                        <p class="lead">
+                            Your trusted source for accurate tyre specifications for cars, bikes, and scooters.
+                        </p>
+                    </div>
+                    
+                    <h3>Our Mission</h3>
+                    <p>
+                        TyreMaster was created to solve a common problem faced by vehicle owners, mechanics, 
+                        and tyre shop professionals: finding accurate tyre size information quickly and easily.
+                    </p>
+                    
+                    <h3 class="mt-4">What We Provide</h3>
+                    <div class="row mt-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-database fa-3x text-primary mb-3"></i>
+                                    <h5>Comprehensive Database</h5>
+                                    <p>Accurate tyre sizes for popular vehicle models</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-search fa-3x text-success mb-3"></i>
+                                    <h5>Easy Search</h5>
+                                    <p>Search by vehicle or tyre size</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-mobile-alt fa-3x text-warning mb-3"></i>
+                                    <h5>Mobile Friendly</h5>
+                                    <p>Access from any device, anywhere</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-4">Our Data Sources</h3>
+                    <p>We gather information from:</p>
+                    <ul>
+                        <li>Vehicle manufacturer specifications</li>
+                        <li>Tyre manufacturer catalogs</li>
+                        <li>Vehicle owner manuals</li>
+                        <li>Verified user submissions</li>
+                    </ul>
+                    
+                    <div class="alert alert-info mt-4">
+                        <h5><i class="fas fa-exclamation-circle"></i> Important Notice</h5>
+                        <p class="mb-0">
+                            While we strive for accuracy, tyre specifications should always be verified with your 
+                            vehicle's owner manual or a certified tyre professional. TyreMaster is for reference 
+                            purposes only.
+                        </p>
+                    </div>
+                    
+                    <h3 class="mt-4">Contribute to Our Database</h3>
+                    <p>
+                        Found a vehicle that's not in our database? Know of a correction that needs to be made?
+                        We welcome contributions from the community.
+                    </p>
+                    <a href="mailto:contact@tyremaster.com" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i> Contact Us to Contribute
+                    </a>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            TyreMaster v1.0 | Last updated: {% now "F j, Y" %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
