@@ -1,82 +1,139 @@
-# TyreMaster
+# 🚗 TyreMaster (Django)
 
-TyreMaster is a Django-based web application that helps you manage and explore tyre information. It includes a simple interface, a backend database, and static assets to support viewing, filtering, and interacting with tyre data.
+A web-based **Tyre Management System** built using the **Django Framework** and **SQLite3 database**.  
+The application helps manage and display tyre-related data in a structured and user-friendly web interface.
 
-## Features
+---
 
-- Django web app for tyre data management
-- Preloaded tyre entries in a SQLite database
-- Static assets (CSS, images, JS) for UI
-- HTML templates to render pages and lists
-- Easy to extend with additional tyre models or features
+## 🚀 Features
 
-## Tech Stack
+- View and manage tyre information  
+- Store tyre data using SQLite database  
+- Modular Django app structure for clean organization  
+- Dynamic pages rendered using Django templates  
+- Static files for styling and frontend interaction  
+- Easy to extend with search, filters, or analytics  
+- Simple local setup and deployment-ready  
 
-- Python 3
-- Django Web Framework
-- HTML, CSS, JavaScript
-- SQLite (default Django database)
+---
 
-## Repo Structure
+## 🏗️ Project Structure
 
+```
 TyreMaster/
-├── static/ # Static files (CSS, JavaScript, images)
-├── templates/ # HTML templates
-├── tyremaster/ # Django project settings
-├── tyres/ # Tyres application
-├── additional_vehicles.csv # Sample dataset
-├── db.sqlite3 # SQLite database file
-├── manage.py # Django CLI entry point
-├── requirements.txt # Python dependencies
-└── README.md
+├── manage.py
+├── db.sqlite3
+├── additional_vehicles.csv
+├── tyremaster/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
+├── tyres/
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── admin.py
+│   └── templates/
+│       └── tyres/
+│           └── index.html
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── images/
+└── requirements.txt
+```
 
+---
 
-## Installation
+## ⚙️ Installation & Local Setup
 
-1. Clone the repo
-
-bash
+### 1️⃣ Clone the Repository
+```bash
 git clone https://github.com/Venkatesh-6921/TyreMaster.git
 cd TyreMaster
-Create a Python virtual environment and activate it
+```
 
-python3 -m venv venv
-source venv/bin/activate   # macOS / Linux
-venv\Scripts\activate      # Windows
-Install dependencies
+### 2️⃣ Create and Activate a Virtual Environment
+```bash
+python -m venv venv
+# On Windows
+venv\Scripts\activate
+# On macOS/Linux
+source venv/bin/activate
+```
 
+### 3️⃣ Install Required Packages
+```bash
 pip install -r requirements.txt
-Apply migrations
+```
 
+### 4️⃣ Apply Migrations
+```bash
+python manage.py makemigrations
 python manage.py migrate
-Load initial data (if available) or skip
+```
 
-# Optional: if fixtures or CSV import logic exists
-Run the development server
+### 5️⃣ Create a Superuser (Optional)
+```bash
+python manage.py createsuperuser
+```
 
+### 6️⃣ Run the Development Server
+```bash
 python manage.py runserver
-Open your browser and navigate to:
+```
 
-http://127.0.0.1:8000/
-Usage
-Once the server is running:
+Now open your browser and visit:  
+👉 http://127.0.0.1:8000/
 
-Visit the home page to browse tyre listings
+---
 
-Use the app features to view detailed tyre data
+### ⚠️ Important Note (Static Files Fix)
 
-Extend models and views to suit your use case
+If static files do not load locally, update `STATICFILES_DIRS` in `settings.py`.
 
-Contributing
-Contributions are welcome. To propose changes:
+```python
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+```
 
-Fork the repo
+---
 
-Create a feature branch
+## 🗃️ Tech Stack
 
-git checkout -b feature/new-feature
-Commit and push your changes
+| Component | Technology |
+|---------|------------|
+| Framework | Django |
+| Database | SQLite3 |
+| Frontend | HTML, CSS (Django Templates) |
+| Backend | Python |
+| Deployment | PythonAnywhere |
+| Version Control | Git + GitHub |
 
-Open a pull request
+---
 
-Keep code clean and consistent with existing Django patterns.
+## 📦 Dependencies
+
+```txt
+Django>=5.0,<6.0
+asgiref>=3.8,<4.0
+sqlparse>=0.5,<1.0
+tzdata>=2023.3,<2025.0
+```
+
+---
+
+## 🧑‍💻 Author
+
+**Maragada Venkateswara Reddy**  
+🎓 Django Web Development Project  
+📧 maragadavekatesh@gmail.com  
+
+---
+
+## 🪶 License
+
+This project is licensed under the MIT License.
